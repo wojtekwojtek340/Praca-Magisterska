@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileApp.Views.MainPanelPage"
+             xmlns:vm="clr-namespace:MobileApp.ViewModels"
+             xmlns:fontAwsome="clr-namespace:FontAwesome"
+             Title="{Binding Title}">
+    
+    <ContentPage.BindingContext>
+        <vm:MainPanelViewModel />
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Accent">#96d1ff</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--<StackLayout BackgroundColor="{StaticResource Accent}" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
+                    <Image Source="xamarin_logo.png" VerticalOptions="Center" HeightRequest="64" />
+                </ContentView>
+            </StackLayout>
+        </StackLayout>-->        
+        <ScrollView Grid.Row="0">
+            <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Podstawowe parametry" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>
+                    <Button HeightRequest="40" WidthRequest="40" HorizontalOptions="EndAndExpand">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="FreeSolid900" Size="Medium" Glyph="{x:Static fontAwsome:FontAwesomeIcons.Sync}"></FontImageSource>
+                        </Button.ImageSource>
+                    </Button>
+                </StackLayout>
+                <Label Text="Temperatura:" FontSize="16"/>
+                <Label Text="Ciśnienie:" FontSize="16"/>
+                <Label Text="Wilgotność" FontSize="16"/>
+
+                <StackLayout>
+                    <Label Margin="10, 10, 0, 0" HorizontalOptions="Start" Text="Podstawowe akcje" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>
+
+                    <Label HorizontalOptions="Center">Output 1 akcje:</Label>
+                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                        <Button Text="Output 1 ON" Command="{Binding SetPin1HighCommand}"/>
+                        <Button Text="Output 1 OFF" Command="{Binding SetPin1LowCommand}"/>
+                    </StackLayout>
+
+                    <Label HorizontalOptions="Center">Output 2 akcje:</Label>
+                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                        <Button Text="Output 2 ON" Command="{Binding OpenWebCommand}"/>
+                        <Button Text="Output 2 OFF" Command="{Binding OpenWebCommand}"/>
+                    </StackLayout>
+
+                    <Label HorizontalOptions="Center">Output 3 akcje:</Label>
+                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                        <Button Text="Output 3 ON" Command="{Binding OpenWebCommand}"/>
+                        <Button Text="Output 3 OFF" Command="{Binding OpenWebCommand}"/>
+                    </StackLayout>
+
+                </StackLayout>
+
+            </StackLayout>
+
+            
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
