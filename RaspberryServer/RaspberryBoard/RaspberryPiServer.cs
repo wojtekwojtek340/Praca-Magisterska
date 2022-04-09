@@ -4,24 +4,26 @@ using IotHubCommunication.Messages.ClientMessages;
 using IotHubCommunication.Messages.Core.ClientMessages;
 using IotHubCommunication.Messages.ServerMessages;
 using RaspberryServer.Commands;
+using RaspberryServer.Measures;
 using System.Configuration;
 using System.Device.Gpio;
+using System.Diagnostics;
 
 namespace RaspberryServer.RaspberryBoard
 {
-    public class RaspberryProvider
+    public class RaspberryPiServer
     {
-        private readonly CommandExecutor _commandExecutor;
+        public CommandExecutor CommandExecutor { get; private set; }
+        public MeasureProvider MeasureProvider { get; private set; }
         public Stack<ClientMessage> MessageStack { get; private set; }
         public Task WaitForMessageTask { get; private set; }
-
-        public GpioController GpioController { get; set; }
-        public RaspberryProvider()
+        public RaspberryPiServer()
         {
+            CommandExecutor = new();
+            MeasureProvider = new();
             MessageStack = new();
             WaitForMessageTask = new Task(async () => await WaitForMessagge());
             WaitForMessageTask.Start();
-            _commandExecutor = new();
         }
         private async Task WaitForMessagge()
         {
@@ -37,7 +39,7 @@ namespace RaspberryServer.RaspberryBoard
                     catch (Exception)
                     {
                         //TODO : logowanie błędów
-                        Console.WriteLine("ERROR");
+                        Trace.WriteLine("WaitForMessage Error");
                     }
                 }
                 Thread.Sleep(500);
@@ -52,12 +54,29 @@ namespace RaspberryServer.RaspberryBoard
         {
             while (true)
             {
-                if (MessageStack.Count > 0)
-                {
-                    var message = MessageStack.Pop();
-                    _commandExecutor.Execute(message);
-                }
+                MessagesExecute();
+                MeasuresExecute();
+                ActionsExceute();
                 Thread.Sleep(100);
+            }
+        }
+
+        private void ActionsExceute()
+        {
+
+        }
+
+        private void MeasuresExecute()
+        {
+
+        }
+
+        private void MessagesExecute()
+        {
+            if (MessageStack.Count > 0)
+            {
+                var message = MessageStack.Pop();
+                CommandExecutor.Execute(message);
             }
         }
     }

@@ -8,7 +8,7 @@ namespace IotHubCommunication.Communications
     {
         event EventHandler<object> MessageSend;
         event EventHandler<T> MessageReceived;
-        Task SendAsync<T>(T item) where T : class, IMessageBase, new();
+        Task SendAsync<Tfunc>(Tfunc item) where Tfunc : class, IMessageBase, new();
         Task ReceiveAsync();
     }
 }
