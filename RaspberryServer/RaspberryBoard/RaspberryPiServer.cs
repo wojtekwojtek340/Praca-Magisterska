@@ -68,7 +68,7 @@ namespace RaspberryServer.RaspberryBoard
 
         private void MeasuresExecute()
         {
-
+            MeasureProvider.MeasuresExecute();
         }
 
         private void MessagesExecute()

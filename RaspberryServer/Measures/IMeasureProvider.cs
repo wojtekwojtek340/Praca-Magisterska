@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RaspberryServer.Measures.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace RaspberryServer.Measures
 {
     public interface IMeasureProvider
     {
-        void MeasureExecute();
+        MeasurementResults MeasurementResults { get; }
+        void MeasuresExecute();
     }
 }
