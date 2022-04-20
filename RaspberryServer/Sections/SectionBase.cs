@@ -1,26 +1,32 @@
-﻿using RaspberryServer.Measures;
+﻿using IotHubCommunication.Messages.ClientMessages;
+using RaspberryServer.Commands;
+using RaspberryServer.Measures;
 using RaspberryServer.Measures.Sensors;
-using RaspberryServer.Measures.Sensors.BMP280;
 
 namespace RaspberryServer.Sections
 {
     public class SectionBase
-    {
-        private readonly ManualResetEvent? isWaterOpenEvent;
-        private readonly ManualResetEvent? isWaterClosedEvent;
-        public MeasureProvider MeasureProvider { get; private set; }
-        public List<ISensor> Sensors { get; set; }
-        public bool IsWaterOpen { get; set; }
+    { 
+        protected event EventHandler<bool>? ElectrovalveSatusChanged;
+        public IMeasureProvider MeasureProvider { get; private set; }
+        public List<ISensor> Sensors { get; set; }       
 
+        private bool isElectrovalveActive;
+        public bool IsElectrovalveActive
+        {
+            get { return isElectrovalveActive; }
+            set 
+            { 
+                isElectrovalveActive = value;
+                ElectrovalveSatusChanged?.Invoke(this, value);
+            }
+        }
         public SectionBase()
         {
-            isWaterOpenEvent = null;
-            isWaterClosedEvent = null;
-            MeasureProvider = new();
+            MeasureProvider = new MeasureProvider();
             Sensors = new();
         }
-
-        internal void DoMeasure()
+        public void DoMeasure()
         {
             foreach (var sensor in Sensors)
             {

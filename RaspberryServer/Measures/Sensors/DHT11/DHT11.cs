@@ -11,7 +11,10 @@ namespace RaspberryServer.Measures.Sensors.DHT11
     {
         public override double? MeasureExecute()
         {
-            using var dht11 = new Dht11(4);
+            using var dht11 = new Dht11(18)
+            {
+                MinTimeBetweenReads = TimeSpan.FromMilliseconds(100),
+            };
             dht11.TryReadHumidity(out var humidity);
             while(humidity.Percent == 0 || humidity.Percent > 100)
             {

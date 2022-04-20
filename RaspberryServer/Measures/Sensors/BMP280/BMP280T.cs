@@ -10,7 +10,6 @@ namespace RaspberryServer.Measures.Sensors.BMP280
     public class BMP280T : BMP280Base
     {
         public BMP280T()
-            : base(SensorType.Temperature)
         {
         }
         protected override double? DoMeasure(Bmp280 bmp280)

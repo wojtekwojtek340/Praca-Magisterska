@@ -22,10 +22,13 @@ namespace RaspberryServer.Measures.Sensors.HW390
             serialPort.DiscardOutBuffer();
             Thread.Sleep(1500);
             serialPort.WriteLine(SensorId);
-            string anwser = serialPort.ReadLine();
+            string anwser = serialPort.ReadLine();            
             serialPort.Close();
-            Double.TryParse(anwser, out double soil);
-            return soil;
+            if (Double.TryParse(anwser, out double soil))
+            {
+                return soil;
+            }
+            return null;
         }
     }
 }
