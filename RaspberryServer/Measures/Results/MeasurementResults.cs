@@ -11,6 +11,6 @@ namespace RaspberryServer.Measures.Results
         public double? Temperature { get; set; }
         public double? Preasure { get; set; }
         public double? AirHumidity { get; set; }
-        public double[]? SoilMoisture { get; set; }
+        public double? SoilMoisture { get; set; }
     }
 }

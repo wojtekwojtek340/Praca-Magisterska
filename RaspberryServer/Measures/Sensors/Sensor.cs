@@ -8,6 +8,6 @@ namespace RaspberryServer.Measures.Sensors
 {
     public abstract class Sensor : ISensor
     {
-        public abstract double MeasureExecute();
+        public abstract double? MeasureExecute();
     }
 }

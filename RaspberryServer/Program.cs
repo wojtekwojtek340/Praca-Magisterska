@@ -1,9 +1,6 @@
 ﻿using RaspberryServer.RaspberryBoard;
 using System.Diagnostics;
 
-Thread.Sleep(5000);
-
-
 Console.WriteLine("W8 for debuger");
 
 while (!Debugger.IsAttached)

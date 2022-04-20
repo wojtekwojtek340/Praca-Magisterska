@@ -5,16 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RaspberryServer.Measures.Sensors.BMP280
+namespace RaspberryServer.Measures.Sensors.DHT11
 {
     public class DHT11 : Sensor
     {
-        public override double MeasureExecute()
+        public override double? MeasureExecute()
         {
             using var dht11 = new Dht11(4);
-            dht11.TryReadTemperature(out var temperature);
             dht11.TryReadHumidity(out var humidity);
-            return temperature.DegreesCelsius;
+            while(humidity.Percent == 0 || humidity.Percent > 100)
+            {
+                dht11.TryReadHumidity(out humidity);
+            };
+            return humidity.Percent;
         }
     }
 }

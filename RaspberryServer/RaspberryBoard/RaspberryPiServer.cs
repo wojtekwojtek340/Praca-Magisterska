@@ -5,6 +5,7 @@ using IotHubCommunication.Messages.Core.ClientMessages;
 using IotHubCommunication.Messages.ServerMessages;
 using RaspberryServer.Commands;
 using RaspberryServer.Measures;
+using RaspberryServer.Sections;
 using System.Configuration;
 using System.Device.Gpio;
 using System.Diagnostics;
@@ -13,18 +14,28 @@ namespace RaspberryServer.RaspberryBoard
 {
     public class RaspberryPiServer
     {
+        public int MyProperty { get; set; }
         public CommandExecutor CommandExecutor { get; private set; }
-        public MeasureProvider MeasureProvider { get; private set; }
         public Stack<ClientMessage> MessageStack { get; private set; }
         public Task WaitForMessageTask { get; private set; }
+        public List<SectionBase> Sections { get; private set; }
         public RaspberryPiServer()
         {
             CommandExecutor = new();
-            MeasureProvider = new();
             MessageStack = new();
+            Sections = new();
             WaitForMessageTask = new Task(async () => await WaitForMessagge());
+            SectionsInitialize();
             WaitForMessageTask.Start();
         }
+
+        private void SectionsInitialize()
+        {
+            Sections.Add(new Section1());
+            Sections.Add(new Section2());
+            Sections.Add(new Section3());
+        }
+
         private async Task WaitForMessagge()
         {
             while (true)
@@ -39,10 +50,10 @@ namespace RaspberryServer.RaspberryBoard
                     catch (Exception)
                     {
                         //TODO : logowanie błędów
-                        Trace.WriteLine("WaitForMessage Error");
+                        Console.WriteLine("WaitForMessage Error");
                     }
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
             }
         }
         private void CommunicationMessageReceived(object? sender, ClientMessage message)
@@ -57,7 +68,6 @@ namespace RaspberryServer.RaspberryBoard
                 MessagesExecute();
                 MeasuresExecute();
                 ActionsExceute();
-                Thread.Sleep(100);
             }
         }
 
@@ -68,7 +78,7 @@ namespace RaspberryServer.RaspberryBoard
 
         private void MeasuresExecute()
         {
-            MeasureProvider.MeasuresExecute();
+            Sections.ForEach(section => section.DoMeasure());
         }
 
         private void MessagesExecute()
