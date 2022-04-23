@@ -32,15 +32,15 @@
             <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Podstawowe parametry" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>
-                    <Button HeightRequest="40" WidthRequest="40" HorizontalOptions="EndAndExpand">
+                    <Button HeightRequest="40" WidthRequest="40" HorizontalOptions="EndAndExpand" Command="{Binding RefreshCommand}">
                         <Button.ImageSource>
                             <FontImageSource FontFamily="FreeSolid900" Size="Medium" Glyph="{x:Static fontAwsome:FontAwesomeIcons.Sync}"></FontImageSource>
                         </Button.ImageSource>
                     </Button>
                 </StackLayout>
-                <Label Text="Temperatura:" FontSize="16"/>
-                <Label Text="Ciśnienie:" FontSize="16"/>
-                <Label Text="Wilgotność" FontSize="16"/>
+                <Label Text="{Binding Data.Temperature, StringFormat='{0} °C'}" FontSize="16"/>
+                <Label Text="{Binding Data.Preasure, StringFormat='{0} hPa'}" FontSize="16"/>
+                <Label Text="{Binding Data.AirHumidity, StringFormat='{0} %'}" FontSize="16"/>
 
                 <StackLayout>
                     <Label Margin="10, 10, 0, 0" HorizontalOptions="Start" Text="Podstawowe akcje" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>

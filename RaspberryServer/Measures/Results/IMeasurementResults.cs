@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RaspberryServer.Measures.Results
 {
-    public class MeasurementResults : IMeasurementResults
+    public interface IMeasurementResults
     {
         public double? Temperature { get; set; }
         public double? Preasure { get; set; }

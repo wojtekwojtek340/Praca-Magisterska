@@ -11,14 +11,18 @@ namespace RaspberryServer.Commands
 {
     public class CommandExecutor
     {
-        public static void Execute(ClientMessage message)
+        public static void Execute(ClientMessage message, Func<Task>? sendMessage = null)
         {
-            if (message is SetDigitalPin command)
+            if (message is SetDigitalPin setPinCommand)
             {
-                using var controller = new GpioController();
-                controller.OpenPin(command.PinNumber, PinMode.Output);
-                controller.Write(command.PinNumber, command.PinState);
-                controller.ClosePin(command.PinNumber);
+                //using var controller = new GpioController();
+                //controller.OpenPin(command.PinNumber, PinMode.Output);
+                //controller.Write(command.PinNumber, command.PinState);
+                //controller.ClosePin(command.PinNumber);
+            }
+            else if(message is GetDataMessage)
+            {
+                sendMessage?.Invoke();
             }
         }
     }

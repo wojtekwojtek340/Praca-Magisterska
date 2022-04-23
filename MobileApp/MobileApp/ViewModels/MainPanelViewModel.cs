@@ -2,6 +2,7 @@
 using IotHubCommunication.Communications;
 using IotHubCommunication.Messages.ClientMessages;
 using IotHubCommunication.Messages.ServerMessages;
+using MobileApp.Models;
 using PCLAppConfig;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace MobileApp.ViewModels
     {
         private readonly Task _waitForMessageTask;
         public Stack<ServerMessage> MessageStack { get; private set; }
+        public Data Data { get; private set; }
         public ICommand RefreshCommand { get; }
         public ICommand SetPin1HighCommand { get; }
         public ICommand SetPin1LowCommand { get; }
@@ -24,6 +26,7 @@ namespace MobileApp.ViewModels
         {
             Title = "Panel Główny";
             MessageStack = new Stack<ServerMessage>();
+            Data = new Data();
             
             _waitForMessageTask = new Task(async () => await WaitForMessagge());
             _waitForMessageTask.Start();
@@ -56,13 +59,22 @@ namespace MobileApp.ViewModels
         {
             if (message == null) return;
             MessageStack.Push(message);
+
+            if(message is SendDataMessage data)
+            {
+                Data.Temperature = data.Temperature;
+                Data.AirHumidity = data.AirHumidity;
+                Data.Preasure = data.Preasure;
+                Data.SoilMoisture = data.SoilMoisture;
+                OnPropertyChanged(nameof(Data));
+            }
         }
         private async Task SetPin1High()
         {
             var message = new SetDigitalPin()
             {
-                Id = 10,
-                PinNumber = 2,
+                Id = 6,
+                PinNumber = 6,
                 PinState = true,
             };
 
@@ -76,7 +88,7 @@ namespace MobileApp.ViewModels
             var message = new SetDigitalPin()
             {
                 Id = 10,
-                PinNumber = 2,
+                PinNumber = 6,
                 PinState = false,
             };
 
@@ -87,7 +99,15 @@ namespace MobileApp.ViewModels
         }
         private async Task Refresh()
         {
+            var message = new GetDataMessage()
+            {
+                Id = 10,
+            };
 
+            using (var communication = CommunicationFactory.CreateForMobileApp<ServerMessage>(ConfigurationManager.AppSettings))
+            {
+                await communication.SendAsync(message);
+            }
         }        
     }
 }

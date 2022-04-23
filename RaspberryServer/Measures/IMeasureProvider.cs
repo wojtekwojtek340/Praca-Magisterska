@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace RaspberryServer.Measures
 {
-    public interface IMeasureProvider
+    public interface IMeasureProvider<T> where T : class, IMeasurementResults, new()
     {
-        MeasurementResults MeasurementResults { get; }
+        T MeasurementResults { get; }
         void MeasuresExecute(ISensor sensor);
     }
 }

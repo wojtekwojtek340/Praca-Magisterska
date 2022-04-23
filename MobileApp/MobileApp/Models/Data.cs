@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace RaspberryServer.Measures.Results
+namespace MobileApp.Models
 {
-    public class MeasurementResults : IMeasurementResults
+    public class Data
     {
         public double? Temperature { get; set; }
         public double? Preasure { get; set; }
         public double? AirHumidity { get; set; }
-        public double? SoilMoisture { get; set; }
+        public List<double?> SoilMoisture { get; set; }
     }
 }

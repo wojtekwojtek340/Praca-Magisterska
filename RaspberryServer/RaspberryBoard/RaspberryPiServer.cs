@@ -10,7 +10,7 @@ namespace RaspberryServer.RaspberryBoard
         public RaspberryPiServer()
         {
             GeneralSectionsSupervisor = new();
-            MessageProvider = new MessageProvider();
+            MessageProvider = new MessageProvider(GeneralSectionsSupervisor);
         }
         public void Start()
         {

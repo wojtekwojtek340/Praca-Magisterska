@@ -1,6 +1,7 @@
 ﻿using IotHubCommunication.Messages.ClientMessages;
 using RaspberryServer.Commands;
 using RaspberryServer.Measures;
+using RaspberryServer.Measures.Results;
 using RaspberryServer.Measures.Sensors;
 
 namespace RaspberryServer.Sections
@@ -8,7 +9,7 @@ namespace RaspberryServer.Sections
     public class SectionBase
     { 
         protected event EventHandler<bool>? ElectrovalveSatusChanged;
-        public IMeasureProvider MeasureProvider { get; private set; }
+        public IMeasureProvider<MeasurementResults> MeasureProvider { get; private set; }
         public List<ISensor> Sensors { get; set; }       
 
         private bool isElectrovalveActive;
@@ -23,7 +24,7 @@ namespace RaspberryServer.Sections
         }
         public SectionBase()
         {
-            MeasureProvider = new MeasureProvider();
+            MeasureProvider = new MeasureProvider<MeasurementResults>();
             Sensors = new();
         }
         public void DoMeasure()

@@ -7,13 +7,13 @@ using System.Diagnostics;
 
 namespace RaspberryServer.Measures
 {
-    public class MeasureProvider : IMeasureProvider
+    public class MeasureProvider<T> : IMeasureProvider<T> where T : class, IMeasurementResults, new()
     {
         public MeasureProvider()
         {
             MeasurementResults = new();
         }
-        public MeasurementResults MeasurementResults { get; private set; }
+        public T MeasurementResults { get; private set; }
 
         public void MeasuresExecute(ISensor sensor)
         {
