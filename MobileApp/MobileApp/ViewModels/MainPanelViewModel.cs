@@ -17,23 +17,32 @@ namespace MobileApp.ViewModels
     public class MainPanelViewModel : BaseViewModel
     {
         private readonly Task _waitForMessageTask;
+
+        public WateringMode WateringMode 
+        {
+            get; 
+            set;
+        }
         public Stack<ServerMessage> MessageStack { get; private set; }
         public Data Data { get; private set; }
         public ICommand RefreshCommand { get; }
-        public ICommand SetPin1HighCommand { get; }
-        public ICommand SetPin1LowCommand { get; }
+        public ICommand EnableSectionCommand { get; }
+        public ICommand DisableSectionCommand { get; }
+        public WateringPlan WateringPlan { get; set; }
         public MainPanelViewModel()
         {
             Title = "Panel Główny";
             MessageStack = new Stack<ServerMessage>();
             Data = new Data();
+            WateringPlan = new WateringPlan();
             
             _waitForMessageTask = new Task(async () => await WaitForMessagge());
             _waitForMessageTask.Start();
 
+
             RefreshCommand = new Command(async () => await Refresh());
-            SetPin1HighCommand = new Command(async () => await SetPin1High());
-            SetPin1LowCommand = new Command(async () => await SetPin1Low());
+            EnableSectionCommand = new Command<int>(async (parameter) => await EnableSection(parameter));
+            DisableSectionCommand = new Command<int>(async (parameter) => await DisableSection(parameter));
         }       
         private async Task WaitForMessagge()
         {
@@ -69,7 +78,7 @@ namespace MobileApp.ViewModels
                 OnPropertyChanged(nameof(Data));
             }
         }
-        private async Task SetPin1High()
+        private async Task EnableSection(int parameter)
         {
             var message = new SetDigitalPin()
             {
@@ -83,7 +92,7 @@ namespace MobileApp.ViewModels
                 await communication.SendAsync(message);
             }
         }
-        private async Task SetPin1Low()
+        private async Task DisableSection(int parameter)
         {
             var message = new SetDigitalPin()
             {

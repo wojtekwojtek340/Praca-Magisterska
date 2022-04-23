@@ -4,15 +4,18 @@
              x:Class="MobileApp.Views.MainPanelPage"
              xmlns:vm="clr-namespace:MobileApp.ViewModels"
              xmlns:fontAwsome="clr-namespace:FontAwesome"
+             xmlns:cv="clr-namespace:MobileApp.Converters"
+             xmlns:models="clr-namespace:MobileApp.Models"
              Title="{Binding Title}">
-    
+
     <ContentPage.BindingContext>
         <vm:MainPanelViewModel />
     </ContentPage.BindingContext>
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="Accent">#96d1ff</Color>
+            <cv:WateringModeConverter x:Key="WateringModeConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -27,48 +30,132 @@
                     <Image Source="xamarin_logo.png" VerticalOptions="Center" HeightRequest="64" />
                 </ContentView>
             </StackLayout>
-        </StackLayout>-->        
+        </StackLayout>-->
         <ScrollView Grid.Row="0">
             <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
                 <StackLayout Orientation="Horizontal">
-                    <Label Text="Podstawowe parametry" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>
+                    <Label Text="Podstawowe informacje" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>
                     <Button HeightRequest="40" WidthRequest="40" HorizontalOptions="EndAndExpand" Command="{Binding RefreshCommand}">
                         <Button.ImageSource>
                             <FontImageSource FontFamily="FreeSolid900" Size="Medium" Glyph="{x:Static fontAwsome:FontAwesomeIcons.Sync}"></FontImageSource>
                         </Button.ImageSource>
                     </Button>
                 </StackLayout>
-                <Label Text="{Binding Data.Temperature, StringFormat='{0} °C'}" FontSize="16"/>
-                <Label Text="{Binding Data.Preasure, StringFormat='{0} hPa'}" FontSize="16"/>
-                <Label Text="{Binding Data.AirHumidity, StringFormat='{0} %'}" FontSize="16"/>
+                <Label Text="{Binding Data.Temperature, StringFormat='Temperatura: {0} °C'}" FontSize="16"/>
+                <Label Text="{Binding Data.Preasure, StringFormat='Ciśnienie: {0} hPa'}" FontSize="16"/>
+                <Label Text="{Binding Data.AirHumidity, StringFormat='Wilgotność powietrza: {0} %'}" FontSize="16"/>
 
                 <StackLayout>
-                    <Label Margin="10, 10, 0, 0" HorizontalOptions="Start" Text="Podstawowe akcje" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>
+                    <Label HorizontalOptions="Start" Text="Menu podlewania" FontFamily="FreeRegular400" FontSize="Title" VerticalOptions="Center"/>
 
-                    <Label HorizontalOptions="Center">Output 1 akcje:</Label>
-                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
-                        <Button Text="Output 1 ON" Command="{Binding SetPin1HighCommand}"/>
-                        <Button Text="Output 1 OFF" Command="{Binding SetPin1LowCommand}"/>
+                    <Label FontSize="16" HorizontalOptions="Center">Tryb podlewania</Label>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="50">
+                        <StackLayout>
+                            <RadioButton IsChecked="{Binding WateringMode, Converter={StaticResource WateringModeConverter}, ConverterParameter={x:Static models:WateringMode.Auto}}" HorizontalOptions="Center" GroupName="WateringMethod"></RadioButton>
+                            <Label VerticalOptions="Center" Text="Auto"></Label>
+                        </StackLayout>
+                        <StackLayout>
+                            <RadioButton IsChecked="{Binding WateringMode, Converter={StaticResource WateringModeConverter}, ConverterParameter={x:Static models:WateringMode.Plan}}" HorizontalOptions="Center" GroupName="WateringMethod"></RadioButton>
+                            <Label VerticalOptions="Center" Text="Plan"></Label>
+                        </StackLayout>
+                        <StackLayout>
+                            <RadioButton IsChecked="{Binding WateringMode, Converter={StaticResource WateringModeConverter}, ConverterParameter={x:Static models:WateringMode.Manual}}" HorizontalOptions="Center" GroupName="WateringMethod"></RadioButton>
+                            <Label VerticalOptions="Center" Text="Maual"></Label>
+                        </StackLayout>
                     </StackLayout>
 
-                    <Label HorizontalOptions="Center">Output 2 akcje:</Label>
-                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
-                        <Button Text="Output 2 ON" Command="{Binding OpenWebCommand}"/>
-                        <Button Text="Output 2 OFF" Command="{Binding OpenWebCommand}"/>
+                    <Grid HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" VerticalOptions="Center">Poniedziałek</Label>
+                        <CheckBox Grid.Row="0" Grid.Column="1"></CheckBox>
+                        <TimePicker HorizontalOptions="Start" Grid.Row="0" Grid.Column="2" Time="{Binding WateringPlan.Monday.Start}"></TimePicker>
+                        <TimePicker HorizontalOptions="End" Grid.Row="0" Grid.Column="3" Time="{Binding WateringPlan.Monday.End}"></TimePicker>
+
+                        <Label Grid.Row="1" Grid.Column="0" VerticalOptions="Center">Wtorek</Label>
+                        <CheckBox Grid.Row="1" Grid.Column="1"></CheckBox>
+                        <TimePicker HorizontalOptions="Start" Grid.Row="1" Grid.Column="2" Time="{Binding WateringPlan.Tuesday.Start}"></TimePicker>
+                        <TimePicker HorizontalOptions="End" Grid.Row="1" Grid.Column="3" Time="{Binding WateringPlan.Tuesday.End}"></TimePicker>
+
+                        <Label Grid.Row="2" Grid.Column="0" VerticalOptions="Center">Środa</Label>
+                        <CheckBox Grid.Row="2" Grid.Column="1"></CheckBox>
+                        <TimePicker HorizontalOptions="Start" Grid.Row="2" Grid.Column="2" Time="{Binding WateringPlan.Wednesday.Start}"></TimePicker>
+                        <TimePicker HorizontalOptions="End" Grid.Row="2" Grid.Column="3" Time="{Binding WateringPlan.Wednesday.End}"></TimePicker>
+
+                        <Label Grid.Row="3" Grid.Column="0" VerticalOptions="Center">Czwartek</Label>
+                        <CheckBox Grid.Row="3" Grid.Column="1"></CheckBox>
+                        <TimePicker HorizontalOptions="Start" Grid.Row="3" Grid.Column="2" Time="{Binding WateringPlan.Thursday.Start}"></TimePicker>
+                        <TimePicker HorizontalOptions="End" Grid.Row="3" Grid.Column="3" Time="{Binding WateringPlan.Thursday.End}"></TimePicker>
+
+                        <Label Grid.Row="4" Grid.Column="0" VerticalOptions="Center">Piątek</Label>
+                        <CheckBox Grid.Row="4" Grid.Column="1"></CheckBox>
+                        <TimePicker HorizontalOptions="Start" Grid.Row="4" Grid.Column="2" Time="{Binding WateringPlan.Friday.Start}"></TimePicker>
+                        <TimePicker HorizontalOptions="End" Grid.Row="4" Grid.Column="3" Time="{Binding WateringPlan.Friday.End}"></TimePicker>
+
+                        <Label Grid.Row="5" Grid.Column="0" VerticalOptions="Center">Sobota</Label>
+                        <CheckBox Grid.Row="5" Grid.Column="1"></CheckBox>
+                        <TimePicker HorizontalOptions="Start" Grid.Row="5" Grid.Column="2" Time="{Binding WateringPlan.Saturday.Start}"></TimePicker>
+                        <TimePicker HorizontalOptions="End" Grid.Row="5" Grid.Column="3" Time="{Binding WateringPlan.Saturday.End}"></TimePicker>
+
+                        <Label Grid.Row="6" Grid.Column="0" VerticalOptions="Center">Niedziela</Label>
+                        <CheckBox Grid.Row="6" Grid.Column="1"></CheckBox>
+                        <TimePicker HorizontalOptions="Start" Grid.Row="6" Grid.Column="2" Time="{Binding WateringPlan.Sunday.Start}"></TimePicker>
+                        <TimePicker HorizontalOptions="End" Grid.Row="6" Grid.Column="3" Time="{Binding WateringPlan.Sunday.End}"></TimePicker>
+
+                        <Button HorizontalOptions="Fill" Grid.Row="7" Grid.ColumnSpan="5" Text="Ustaw"></Button>
+                    </Grid>
+
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="40">
+                        <StackLayout>
+                            <Label Text="{Binding Data.Temperature, StringFormat='Sekcja1 [{0}%]'}" HorizontalOptions="Center"></Label>
+                            <StackLayout Orientation="Horizontal">
+                                <Button WidthRequest="60" Text="ON" CommandParameter="1" Command="{Binding EnableSectionCommand}"/>
+                                <Button WidthRequest="60" Text="OFF" CommandParameter="1" Command="{Binding DisableSectionCommand}"/>
+                            </StackLayout>
+                        </StackLayout>
+                        <StackLayout>
+                            <Label Text="{Binding Data.Temperature, StringFormat='Sekcja2 [{0}%]'}" HorizontalOptions="Center"></Label>
+                            <StackLayout Orientation="Horizontal">
+                                <Button WidthRequest="60" Text="ON" CommandParameter="2" Command="{Binding EnableSectionCommand}"/>
+                                <Button WidthRequest="60" Text="OFF" CommandParameter="2" Command="{Binding DisableSectionCommand}"/>
+                            </StackLayout>
+                        </StackLayout>
                     </StackLayout>
 
-                    <Label HorizontalOptions="Center">Output 3 akcje:</Label>
-                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
-                        <Button Text="Output 3 ON" Command="{Binding OpenWebCommand}"/>
-                        <Button Text="Output 3 OFF" Command="{Binding OpenWebCommand}"/>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="40">
+                        <StackLayout>
+                            <Label Text="{Binding Data.Temperature, StringFormat='Sekcja3 [{0}%]'}" HorizontalOptions="Center"></Label>
+                            <StackLayout Orientation="Horizontal">
+                                <Button WidthRequest="60" Text="ON" CommandParameter="3" Command="{Binding EnableSectionCommand}"/>
+                                <Button WidthRequest="60" Text="OFF" CommandParameter="3" Command="{Binding DisableSectionCommand}"/>
+                            </StackLayout>
+                        </StackLayout>
+                        <StackLayout>
+                            <Label Text="{Binding Data.Temperature, StringFormat='Sekcja4 [{0}%]'}" HorizontalOptions="Center"></Label>
+                            <StackLayout Orientation="Horizontal">
+                                <Button WidthRequest="60" Text="ON" CommandParameter="4" Command="{Binding EnableSectionCommand}"/>
+                                <Button WidthRequest="60" Text="OFF" CommandParameter="4" Command="{Binding DisableSectionCommand}"/>
+                            </StackLayout>
+                        </StackLayout>
                     </StackLayout>
-
                 </StackLayout>
-
             </StackLayout>
-
-            
         </ScrollView>
     </Grid>
-
 </ContentPage>
