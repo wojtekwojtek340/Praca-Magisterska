@@ -18,7 +18,7 @@ namespace RaspberryServer.Sections
             Sensors.Add(new HW390v1());
             ElectrovalveSatusChanged += Section1_SlaveElectrovalveSatusChanged;
         }
-        private void Section1_SlaveElectrovalveSatusChanged(object? sender, bool e)
+        private async void Section1_SlaveElectrovalveSatusChanged(object? sender, bool e)
         {
             var command = new SetDigitalPin
             {
@@ -26,7 +26,7 @@ namespace RaspberryServer.Sections
                 PinState = e,
             };
 
-            CommandExecutor.Execute(command);
+            //await CommandExecutor.Execute(command);
         }
     }
 }

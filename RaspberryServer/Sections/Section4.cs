@@ -1,7 +1,5 @@
 ﻿using IotHubCommunication.Messages.ClientMessages;
 using RaspberryServer.Commands;
-using RaspberryServer.Measures.Sensors.BMP280;
-using RaspberryServer.Measures.Sensors.DHT11;
 using RaspberryServer.Measures.Sensors.HW390;
 using System;
 using System.Collections.Generic;
@@ -11,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace RaspberryServer.Sections
 {
-    public class Section2 : SectionBase
+    public class Section4 : SectionBase
     {
-        public Section2()
+        public Section4()
         {
-            Sensors.Add(new HW390v2());            
-            ElectrovalveSatusChanged += Section2_SlaveElectrovalveSatusChanged;
+            Sensors.Add(new HW390v4());
+            ElectrovalveSatusChanged += Section4_SlaveElectrovalveSatusChanged;
         }
 
-        private async void Section2_SlaveElectrovalveSatusChanged(object? sender, bool e)
+        private async void Section4_SlaveElectrovalveSatusChanged(object? sender, bool e)
         {
             var command = new SetDigitalPin
             {
-                PinNumber = 26,
+                PinNumber = 25,
                 PinState = e,
             };
 

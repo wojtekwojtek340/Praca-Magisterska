@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MobileApp.Models
-{
-    public class Data
+namespace IotHubCommunication.Data
+{ 
+    public class SensorsData
     {
         public double? Temperature { get; set; }
         public double? Preasure { get; set; }

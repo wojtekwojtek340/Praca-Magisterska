@@ -26,9 +26,23 @@ namespace RaspberryServer.Measures.Sensors.HW390
             serialPort.Close();
             if (Double.TryParse(anwser, out double soil))
             {
-                return soil;
+                return Map(soil);
             }
             return null;
+        }
+
+        private double Map(double value)
+        {
+            //linear function measure
+            var result = 3.3 * value - 1089;
+
+            if (result > 100)
+                return 100;
+
+            if (result < 0)
+                return 0;
+
+            return result;
         }
     }
 }

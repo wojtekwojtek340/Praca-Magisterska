@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MobileApp.Models
+namespace IotHubCommunication.Data
 {
     public enum WateringMode
     {

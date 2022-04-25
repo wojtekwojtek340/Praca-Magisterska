@@ -30,7 +30,7 @@ namespace RaspberryServer.RaspberryBoard
 
         private void ActionsExceute()
         {
-
+            GeneralSectionsSupervisor.ActionsExecute();
         }
 
         private void MeasuresExecute()

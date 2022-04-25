@@ -1,22 +1,23 @@
-﻿using IotHubCommunication.Messages.Core.ClientMessages;
+﻿using IotHubCommunication.Data;
+using IotHubCommunication.Messages.Core.ClientMessages;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace IotHubCommunication.Messages.ClientMessages
 {
-    public class SetDigitalPin : ClientMessage
+    public class SetupSectionMessage : ClientMessage
     {
         /// <summary>
-        /// Digital pin number to set
+        /// Section number to set.
         /// </summary>
-        public int PinNumber { get; set; }
+        public SectionNumbers SectionNumber { get; set; }
 
         /// <summary>
         /// Pin state
         /// True = High
         /// False = Low
         /// </summary>
-        public bool PinState { get; set; }
+        public bool SectionState { get; set; }
     }
 }

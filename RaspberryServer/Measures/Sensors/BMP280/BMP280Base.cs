@@ -24,7 +24,13 @@ namespace RaspberryServer.Measures.Sensors.BMP280
             int measurementTime = bmp280.GetMeasurementDuration();
             bmp280.SetPowerMode(Bmx280PowerMode.Forced);
             Thread.Sleep(measurementTime);
-            return DoMeasure(bmp280);
+            var result = DoMeasure(bmp280);
+            if (!result.HasValue)
+            {
+                return null;
+            }
+            return Math.Round(result.Value, 2);
+
         }
 
         protected virtual double? DoMeasure(Bmp280 bmp280)

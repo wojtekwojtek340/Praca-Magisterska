@@ -10,7 +10,8 @@ namespace RaspberryServer.Sections
     { 
         protected event EventHandler<bool>? ElectrovalveSatusChanged;
         public IMeasureProvider<MeasurementResults> MeasureProvider { get; private set; }
-        public List<ISensor> Sensors { get; set; }       
+        public List<ISensor> Sensors { get; set; }
+        public CommandExecutor CommandExecutor { get; set; }
 
         private bool isElectrovalveActive;
         public bool IsElectrovalveActive
@@ -18,12 +19,16 @@ namespace RaspberryServer.Sections
             get { return isElectrovalveActive; }
             set 
             { 
-                isElectrovalveActive = value;
-                ElectrovalveSatusChanged?.Invoke(this, value);
+                if(IsElectrovalveActive != value)
+                {
+                    isElectrovalveActive = value;
+                    ElectrovalveSatusChanged?.Invoke(this, value);
+                }
             }
         }
         public SectionBase()
         {
+            CommandExecutor = new();
             MeasureProvider = new MeasureProvider<MeasurementResults>();
             Sensors = new();
         }

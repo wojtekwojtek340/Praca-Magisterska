@@ -14,7 +14,7 @@ namespace RaspberryServer.Sections
             ElectrovalveSatusChanged += Section3_SlaveElectrovalveSatusChanged;
         }
 
-        private void Section3_SlaveElectrovalveSatusChanged(object? sender, bool e)
+        private async void Section3_SlaveElectrovalveSatusChanged(object? sender, bool e)
         {
             var command = new SetDigitalPin
             {
@@ -22,7 +22,7 @@ namespace RaspberryServer.Sections
                 PinState = e,
             };
 
-            CommandExecutor.Execute(command);
+            //await CommandExecutor.Execute(command);
         }
     }
 }
