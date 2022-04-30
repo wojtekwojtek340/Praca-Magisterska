@@ -5,13 +5,7 @@ using IotHubCommunication.Messages.Core.ClientMessages;
 using IotHubCommunication.Messages.ServerMessages;
 using RaspberryServer.Commands;
 using RaspberryServer.Sections;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Device.Gpio;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaspberryServer.Messages
 {
@@ -83,21 +77,21 @@ namespace RaspberryServer.Messages
 
                 if (message is SetupSectionMessage setupSectionCommand)
                 {
-                    generalSectionsSupervisor.SetupSection(setupSectionCommand);            
+                    generalSectionsSupervisor.SetupSection(setupSectionCommand);
                 }
                 else if (message is GetDataMessage)
                 {
                     await SendDataMessage();
                 }
-                else if(message is SetWateringPlan setWateringPlanCommand)
+                else if (message is SetWateringPlan setWateringPlanCommand)
                 {
                     generalSectionsSupervisor.WateringPlan = setWateringPlanCommand.WateringPlan;
-                }   
-                else if(message is SetModeMessage setModeCommand)
+                }
+                else if (message is SetModeMessage setModeCommand)
                 {
                     generalSectionsSupervisor.WateringMode = setModeCommand.WateringMode;
                 }
             }
-        }        
+        }
     }
 }

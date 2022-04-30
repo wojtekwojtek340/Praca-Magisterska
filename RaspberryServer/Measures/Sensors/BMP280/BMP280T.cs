@@ -1,9 +1,4 @@
 ﻿using Iot.Device.Bmxx80;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaspberryServer.Measures.Sensors.BMP280
 {
@@ -12,10 +7,10 @@ namespace RaspberryServer.Measures.Sensors.BMP280
         public BMP280T()
         {
         }
-        protected override double? DoMeasure(Bmp280 bmp280)
+        protected override void DoMeasure<T>(Bmp280 bmp280, T measurementResults)
         {
             bmp280.TryReadTemperature(out var preValue);
-            return preValue.DegreesCelsius;
+            measurementResults.Preasure = Math.Round(preValue.DegreesCelsius, 2);
         }
     }
 }

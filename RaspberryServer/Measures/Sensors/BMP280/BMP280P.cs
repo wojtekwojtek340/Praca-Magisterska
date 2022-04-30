@@ -7,10 +7,10 @@ namespace RaspberryServer.Measures.Sensors.BMP280
         public BMP280P()
         {
         }
-        protected override double? DoMeasure(Bmp280 bmp280)
+        protected override void DoMeasure<T>(Bmp280 bmp280, T measurementResults)
         {
             bmp280.TryReadPressure(out var preValue);
-            return preValue.Hectopascals;
+            measurementResults.Preasure = Math.Round(preValue.Hectopascals, 2);
         }
     }
 }

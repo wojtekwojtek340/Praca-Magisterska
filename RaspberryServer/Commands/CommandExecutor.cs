@@ -1,11 +1,4 @@
-﻿using IotHubCommunication.Messages.ClientMessages;
-using IotHubCommunication.Messages.Core.ClientMessages;
-using System;
-using System.Collections.Generic;
-using System.Device.Gpio;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Device.Gpio;
 
 namespace RaspberryServer.Commands
 {

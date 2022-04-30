@@ -3,17 +3,12 @@ using IotHubCommunication.Messages.ClientMessages;
 using RaspberryServer.Commands;
 using RaspberryServer.Measures.Sensors.BMP280;
 using RaspberryServer.Measures.Sensors.DHT11;
-using RaspberryServer.Sections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaspberryServer.Sections
 {
     public class GeneralSectionsSupervisor : SectionBase
     {
+        public event EventHandler? SlaveElectrovalveStatusChanged;
         public List<SectionBase> Sections { get; private set; }
         public WateringPlan WateringPlan { get; set; }
         public WateringMode WateringMode { get; set; }
@@ -26,7 +21,20 @@ namespace RaspberryServer.Sections
             WateringPlan = new();
             Sections = new();
             ElectrovalveSatusChanged += GeneralSectionsSupervisor_ElectrovalveSatusChanged;
+            SlaveElectrovalveStatusChanged += GeneralSectionsSupervisor_SlaveElectrovalveStatusChanged1;
             SectionsInitialize();
+        }
+
+        private void GeneralSectionsSupervisor_SlaveElectrovalveStatusChanged1(object? sender, EventArgs e)
+        {
+            if (Sections.Any(x => x.IsElectrovalveActive == true))
+            {
+                IsElectrovalveActive = true;
+            }
+            else
+            {
+                IsElectrovalveActive = false;
+            }
         }
 
         internal void ActionsExecute()
@@ -44,7 +52,7 @@ namespace RaspberryServer.Sections
                     break;
                 default:
                     break;
-            }          
+            }
         }
 
         private void ManualModeExecute()
@@ -54,7 +62,17 @@ namespace RaspberryServer.Sections
 
         private void AutoModeExecute()
         {
-
+            Sections.ForEach(x =>
+            {
+                if (x.MeasureProvider.MeasurementResults.SoilMoisture < 30)
+                {
+                    x.IsElectrovalveActive = true;
+                }
+                else
+                {
+                    x.IsElectrovalveActive = false;
+                }
+            });
         }
 
         private void PlanModeExecute()
@@ -117,13 +135,11 @@ namespace RaspberryServer.Sections
 
         private void DisableSections()
         {
-            IsElectrovalveActive = false;
             Sections.ForEach(section => section.IsElectrovalveActive = false);
         }
 
         private void EnableSections()
         {
-            IsElectrovalveActive = true;
             Sections.ForEach(section => section.IsElectrovalveActive = true);
         }
 
@@ -135,10 +151,12 @@ namespace RaspberryServer.Sections
 
         private void SectionsInitialize()
         {
-            Sections.Add(new Section1());
-            Sections.Add(new Section2());
-            Sections.Add(new Section3());
-            Sections.Add(new Section4());
+            Sections.Add(new Section1(SlaveElectrovalveStatusChanged));
+            Sections.Add(new Section2(SlaveElectrovalveStatusChanged));
+            Sections.Add(new Section3(SlaveElectrovalveStatusChanged));
+            Sections.Add(new Section4(SlaveElectrovalveStatusChanged));
+            Sections.ForEach(x => x.RaiseElectrovalveStatusChanged(false));
+            RaiseElectrovalveStatusChanged(false);
         }
 
         internal void SetupSection(SetupSectionMessage setupSectionCommand)
@@ -160,30 +178,17 @@ namespace RaspberryServer.Sections
                 default:
                     break;
             }
-            ShouldBeGeneralValveAcvive();
         }
 
         private async void GeneralSectionsSupervisor_ElectrovalveSatusChanged(object? sender, bool e)
         {
             var command = new SetDigitalPin
             {
-                PinNumber = 6,
+                PinNumber = Int32.Parse(PinoutDictionary.MainElectrovalve),
                 PinState = e,
             };
 
-            //await CommandExecutor.Execute(command);
-        }
-
-        private void ShouldBeGeneralValveAcvive()
-        {
-            if (Sections.Any(x => x.IsElectrovalveActive == true))
-            {
-                IsElectrovalveActive = true;
-            }
-            else
-            {
-                IsElectrovalveActive = false;
-            }
+            await CommandExecutor.Execute(command);
         }
     }
 }

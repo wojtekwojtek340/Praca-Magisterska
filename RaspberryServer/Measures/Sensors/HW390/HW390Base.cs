@@ -5,9 +5,9 @@ namespace RaspberryServer.Measures.Sensors.HW390
     public class HW390Base : Sensor
     {
         protected virtual string SensorId => "";
-        public override double? MeasureExecute()
+        public override void MeasureExecute<T>(T measurementResults)
         {
-            using var serialPort = new SerialPort("/dev/ttyUSB0", 9600, Parity.None, 8, StopBits.One)
+            using var serialPort = new SerialPort(PinoutDictionary.UsbName, 9600, Parity.None, 8, StopBits.One)
             {
                 ReadTimeout = 500,
                 WriteTimeout = 500,
@@ -22,15 +22,17 @@ namespace RaspberryServer.Measures.Sensors.HW390
             serialPort.DiscardOutBuffer();
             Thread.Sleep(1500);
             serialPort.WriteLine(SensorId);
-            string anwser = serialPort.ReadLine();            
+            string anwser = serialPort.ReadLine();
             serialPort.Close();
             if (Double.TryParse(anwser, out double soil))
             {
-                return Map(soil);
+                measurementResults.SoilMoisture = Map(soil);
             }
-            return null;
+            else
+            {
+                measurementResults.SoilMoisture = null;
+            }
         }
-
         private double Map(double value)
         {
             //linear function measure

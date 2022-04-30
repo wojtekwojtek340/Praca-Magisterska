@@ -1,31 +1,28 @@
-﻿using IotHubCommunication.Messages.ClientMessages;
-using RaspberryServer.Commands;
+﻿using RaspberryServer.Commands;
 using RaspberryServer.Measures.Sensors.HW390;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaspberryServer.Sections
 {
     public class Section4 : SectionBase
     {
-        public Section4()
+        private readonly EventHandler? SlaveElectrovalveStatusChanged;
+        public Section4(EventHandler? slaveElectrovalveStatusChanged)
         {
             Sensors.Add(new HW390v4());
             ElectrovalveSatusChanged += Section4_SlaveElectrovalveSatusChanged;
+            SlaveElectrovalveStatusChanged = slaveElectrovalveStatusChanged;
         }
-
         private async void Section4_SlaveElectrovalveSatusChanged(object? sender, bool e)
         {
+            SlaveElectrovalveStatusChanged?.Invoke(this, EventArgs.Empty);
+
             var command = new SetDigitalPin
             {
-                PinNumber = 25,
+                PinNumber = Int32.Parse(PinoutDictionary.Section4Electrovalve),
                 PinState = e,
             };
 
-            //await CommandExecutor.Execute(command);
+            await CommandExecutor.Execute(command);
         }
     }
 }

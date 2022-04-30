@@ -37,4 +37,19 @@
     <ProjectReference Include="..\IotHubCommunication\IotHubCommunication.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="PinoutDictionary.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PinoutDictionary.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="PinoutDictionary.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PinoutDictionary.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

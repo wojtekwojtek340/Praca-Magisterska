@@ -22,7 +22,6 @@ namespace RaspberryServer.RaspberryBoard
                 Thread.Sleep(1000);
             }
         }
-
         private void MessagesExecute()
         {
             MessageProvider.MessagesExecute();
@@ -35,7 +34,7 @@ namespace RaspberryServer.RaspberryBoard
 
         private void MeasuresExecute()
         {
-            GeneralSectionsSupervisor.MeasuresExecute();            
+            GeneralSectionsSupervisor.MeasuresExecute();
         }
     }
 }

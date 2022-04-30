@@ -1,5 +1,4 @@
-﻿using IotHubCommunication.Messages.ClientMessages;
-using RaspberryServer.Commands;
+﻿using RaspberryServer.Commands;
 using RaspberryServer.Measures;
 using RaspberryServer.Measures.Results;
 using RaspberryServer.Measures.Sensors;
@@ -7,7 +6,7 @@ using RaspberryServer.Measures.Sensors;
 namespace RaspberryServer.Sections
 {
     public class SectionBase
-    { 
+    {
         protected event EventHandler<bool>? ElectrovalveSatusChanged;
         public IMeasureProvider<MeasurementResults> MeasureProvider { get; private set; }
         public List<ISensor> Sensors { get; set; }
@@ -17,9 +16,9 @@ namespace RaspberryServer.Sections
         public bool IsElectrovalveActive
         {
             get { return isElectrovalveActive; }
-            set 
-            { 
-                if(IsElectrovalveActive != value)
+            set
+            {
+                if (IsElectrovalveActive != value)
                 {
                     isElectrovalveActive = value;
                     ElectrovalveSatusChanged?.Invoke(this, value);
@@ -38,6 +37,10 @@ namespace RaspberryServer.Sections
             {
                 MeasureProvider.MeasuresExecute(sensor);
             }
+        }
+        public void RaiseElectrovalveStatusChanged(bool state)
+        {
+            ElectrovalveSatusChanged?.Invoke(this, state);
         }
     }
 }

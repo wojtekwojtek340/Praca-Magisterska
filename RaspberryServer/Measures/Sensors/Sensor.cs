@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RaspberryServer.Measures.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace RaspberryServer.Measures.Sensors
 {
     public abstract class Sensor : ISensor
     {
-        public abstract double? MeasureExecute();
+        public abstract void MeasureExecute<T>(T measurementResults) where T : IMeasurementResults;
     }
 }

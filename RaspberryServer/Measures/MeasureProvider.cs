@@ -1,9 +1,5 @@
 ﻿using RaspberryServer.Measures.Results;
 using RaspberryServer.Measures.Sensors;
-using RaspberryServer.Measures.Sensors.BMP280;
-using RaspberryServer.Measures.Sensors.DHT11;
-using RaspberryServer.Measures.Sensors.HW390;
-using System.Diagnostics;
 
 namespace RaspberryServer.Measures
 {
@@ -17,50 +13,14 @@ namespace RaspberryServer.Measures
 
         public void MeasuresExecute(ISensor sensor)
         {
-            if(sensor is BMP280P)
+            try
             {
-                try
-                {
-                    MeasurementResults.Preasure = sensor.MeasureExecute();
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                sensor.MeasureExecute(MeasurementResults);
             }
-            else if(sensor is BMP280T)
+            catch (Exception ex)
             {
-                try
-                {
-                    MeasurementResults.Temperature = sensor.MeasureExecute();                   
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                Console.WriteLine(ex.Message);
             }
-            else if (sensor is DHT11)
-            {
-                try
-                { 
-                    MeasurementResults.AirHumidity = sensor.MeasureExecute();              
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            else if (sensor is HW390Base)
-            {
-                try
-                {
-                    MeasurementResults.SoilMoisture = sensor.MeasureExecute();          
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }       
+        }
     }
 }

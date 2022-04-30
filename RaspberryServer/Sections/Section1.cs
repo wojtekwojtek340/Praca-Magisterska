@@ -1,32 +1,28 @@
-﻿using IotHubCommunication.Messages.ClientMessages;
-using RaspberryServer.Commands;
-using RaspberryServer.Measures.Sensors.BMP280;
-using RaspberryServer.Measures.Sensors.DHT11;
+﻿using RaspberryServer.Commands;
 using RaspberryServer.Measures.Sensors.HW390;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaspberryServer.Sections
 {
     public class Section1 : SectionBase
     {
-        public Section1()
-        {            
+        private readonly EventHandler? SlaveElectrovalveStatusChanged;
+        public Section1(EventHandler? slaveElectrovalveStatusChanged) : base()
+        {
             Sensors.Add(new HW390v1());
             ElectrovalveSatusChanged += Section1_SlaveElectrovalveSatusChanged;
+            SlaveElectrovalveStatusChanged = slaveElectrovalveStatusChanged;
         }
         private async void Section1_SlaveElectrovalveSatusChanged(object? sender, bool e)
         {
+            SlaveElectrovalveStatusChanged?.Invoke(this, EventArgs.Empty);
+
             var command = new SetDigitalPin
             {
-                PinNumber = 16,
+                PinNumber = Int32.Parse(PinoutDictionary.Section1Electrovalve),
                 PinState = e,
             };
 
-            //await CommandExecutor.Execute(command);
+            await CommandExecutor.Execute(command);
         }
     }
 }

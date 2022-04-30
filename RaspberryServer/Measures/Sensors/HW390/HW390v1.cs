@@ -1,11 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RaspberryServer.Measures.Sensors.HW390
+﻿namespace RaspberryServer.Measures.Sensors.HW390
 {
     internal class HW390v1 : HW390Base
     {

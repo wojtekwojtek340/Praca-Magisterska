@@ -1,26 +1,21 @@
 ﻿using Iot.Device.DHTxx;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaspberryServer.Measures.Sensors.DHT11
 {
     public class DHT11 : Sensor
     {
-        public override double? MeasureExecute()
+        public override void MeasureExecute<T>(T measurementResults)
         {
-            using var dht11 = new Dht11(18)
+            using var dht11 = new Dht11(Int32.Parse(PinoutDictionary.DHT11))
             {
                 MinTimeBetweenReads = TimeSpan.FromMilliseconds(100),
             };
             dht11.TryReadHumidity(out var humidity);
-            while(humidity.Percent == 0 || humidity.Percent > 100)
+            while (humidity.Percent == 0 || humidity.Percent > 100)
             {
                 dht11.TryReadHumidity(out humidity);
             };
-            return humidity.Percent;
+            measurementResults.AirHumidity = humidity.Percent;
         }
     }
 }
