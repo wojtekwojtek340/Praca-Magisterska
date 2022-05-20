@@ -36,7 +36,7 @@ namespace RaspberryServer.Measures.Sensors.HW390
         private double Map(double value)
         {
             //linear function measure
-            var result = 3.3 * value - 1089;
+            var result = -(1/3.3) * value + (640/3.3);
 
             if (result > 100)
                 return 100;
@@ -44,7 +44,7 @@ namespace RaspberryServer.Measures.Sensors.HW390
             if (result < 0)
                 return 0;
 
-            return result;
+            return Math.Round(result, 2);
         }
     }
 }

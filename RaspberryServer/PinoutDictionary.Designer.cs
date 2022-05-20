@@ -106,7 +106,7 @@ namespace RaspberryServer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 26.
+        ///   Looks up a localized string similar to 8.
         /// </summary>
         internal static string Section2Electrovalve {
             get {

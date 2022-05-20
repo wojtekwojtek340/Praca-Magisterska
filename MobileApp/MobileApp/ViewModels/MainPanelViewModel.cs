@@ -18,7 +18,8 @@ namespace MobileApp.ViewModels
     public class MainPanelViewModel : BaseViewModel
     {
         private readonly Task _waitForMessageTask;
-        private event EventHandler<WateringMode> _wateringModeChanged;
+        private readonly Task _messagesExecuteTask;
+        private event EventHandler<WateringMode> WateringModeChanged;
 
         private WateringMode wateringMode;
         public WateringMode WateringMode 
@@ -29,12 +30,12 @@ namespace MobileApp.ViewModels
                 if(wateringMode != value)
                 {
                     SetProperty(ref wateringMode, value);
-                    _wateringModeChanged?.Invoke(this, value);
+                    WateringModeChanged?.Invoke(this, value);
                 }
             }
         }      
 
-        public Stack<ServerMessage> MessageStack { get; private set; }
+        public Queue<ServerMessage> MessageQueue { get; private set; }
         public SensorsData SensorsData { get; private set; }
         public ICommand RefreshCommand { get; }
         public ICommand EnableSectionCommand { get; }
@@ -44,19 +45,70 @@ namespace MobileApp.ViewModels
         public MainPanelViewModel()
         {
             Title = "Panel Główny";
-            MessageStack = new Stack<ServerMessage>();
+            MessageQueue = new Queue<ServerMessage>();
             SensorsData = new SensorsData();
             WateringPlan = new WateringPlan();
 
-            _wateringModeChanged += MainPanelViewModel__wateringModeChanged;
+            WateringModeChanged += MainPanelViewModel__wateringModeChanged;
+
             _waitForMessageTask = new Task(async () => await WaitForMessagge());
             _waitForMessageTask.Start();
+
+            _messagesExecuteTask = new Task(async () => await MessagesExecute());
+            _messagesExecuteTask.Start();
 
 
             RefreshCommand = new Command(async () => await Refresh());
             SetWateringPlanCommand = new Command(async () => await SetWateringPlan());
             EnableSectionCommand = new Command<SectionNumbers>(async (sectionNumber) => await EnableSection(sectionNumber));
             DisableSectionCommand = new Command<SectionNumbers>(async (sectionNumber) => await DisableSection(sectionNumber));
+
+            Task.Run(async () => await GetServerMode());
+            Task.Run(async() => await Refresh());
+        }
+
+        private async Task GetServerMode()
+        {
+            var message = new GetModeMessage()
+            {
+                Id = 6,
+            };
+
+            using (var communication = CommunicationFactory.CreateForMobileApp<ServerMessage>(ConfigurationManager.AppSettings))
+            {
+                await communication.SendAsync(message);
+            }
+        }
+
+        private async Task MessagesExecute()
+        {
+            while (true)
+            {
+                if(MessageQueue.Count > 0)
+                {
+                    var message = MessageQueue.Dequeue();
+
+                    if (message is SendDataMessage data)
+                    {
+                        await SetSensorsData(data);
+                    }
+                    else if(message is SendModeMessage mode)
+                    {
+                        WateringMode = mode.WateringMode;                        
+                    }
+                }
+                Thread.Sleep(1000);
+            }
+        }
+
+        private Task SetSensorsData(SendDataMessage data)
+        {
+            SensorsData.Temperature = data.SensorsData.Temperature;
+            SensorsData.AirHumidity = data.SensorsData.AirHumidity;
+            SensorsData.Preasure = data.SensorsData.Preasure;
+            SensorsData.SoilMoisture = data.SensorsData.SoilMoisture;
+            OnPropertyChanged(nameof(SensorsData));
+            return Task.CompletedTask;
         }
 
         private async void MainPanelViewModel__wateringModeChanged(object sender, WateringMode e)
@@ -110,16 +162,7 @@ namespace MobileApp.ViewModels
         private void CommunicationMessageReceived(object sender, ServerMessage message)
         {
             if (message == null) return;
-            MessageStack.Push(message);
-
-            if(message is SendDataMessage data)
-            {
-                SensorsData.Temperature = data.SensorsData.Temperature;
-                SensorsData.AirHumidity = data.SensorsData.AirHumidity;
-                SensorsData.Preasure = data.SensorsData.Preasure;
-                SensorsData.SoilMoisture = data.SensorsData.SoilMoisture;
-                OnPropertyChanged(nameof(SensorsData));
-            }
+            MessageQueue.Enqueue(message);            
         }
         private async Task EnableSection(SectionNumbers sectionNumber)
         {

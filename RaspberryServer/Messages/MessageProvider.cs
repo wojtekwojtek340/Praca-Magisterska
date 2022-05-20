@@ -11,19 +11,19 @@ namespace RaspberryServer.Messages
 {
     public class MessageProvider : IMessageProvider
     {
-        private readonly Task waitForMessageTask;
+        private readonly Thread waitForMessageTask;
         private readonly GeneralSectionsSupervisor generalSectionsSupervisor;
-        public Stack<ClientMessage> MessageStack { get; private set; }
+        public Queue<ClientMessage> MessageQueue { get; private set; }
         public CommandExecutor CommandExecutor { get; set; }
         public MessageProvider(GeneralSectionsSupervisor generalSectionsSupervisor)
         {
             this.generalSectionsSupervisor = generalSectionsSupervisor;
-            MessageStack = new();
+            MessageQueue = new();
             CommandExecutor = new();
-            waitForMessageTask = new Task(async () => await WaitForMessagge());
+            waitForMessageTask = new Thread(() => WaitForMessagge());
             waitForMessageTask.Start();
         }
-        private async Task WaitForMessagge()
+        private void WaitForMessagge()
         {
             while (true)
             {
@@ -32,7 +32,7 @@ namespace RaspberryServer.Messages
                     communication.MessageReceived += CommunicationMessageReceived;
                     try
                     {
-                        await communication.ReceiveAsync();
+                        communication.ReceiveAsync().Wait();
                     }
                     catch (Exception)
                     {
@@ -46,7 +46,7 @@ namespace RaspberryServer.Messages
         private void CommunicationMessageReceived(object? sender, ClientMessage message)
         {
             if (message == null) return;
-            MessageStack.Push(message);
+            MessageQueue.Enqueue(message);
         }
         private async Task SendDataMessage()
         {
@@ -71,9 +71,9 @@ namespace RaspberryServer.Messages
 
         public async void MessagesExecute()
         {
-            if (MessageStack.Count > 0)
+            if (MessageQueue.Count > 0)
             {
-                var message = MessageStack.Pop();
+                var message = MessageQueue.Dequeue();
 
                 if (message is SetupSectionMessage setupSectionCommand)
                 {
@@ -91,7 +91,23 @@ namespace RaspberryServer.Messages
                 {
                     generalSectionsSupervisor.WateringMode = setModeCommand.WateringMode;
                 }
+                else if (message is GetModeMessage)
+                {
+                    await SendModeMessage();
+                }
             }
+        }
+
+        private async Task SendModeMessage()
+        {
+            var message = new SendModeMessage()
+            {
+                Id = 10,
+                WateringMode = generalSectionsSupervisor.WateringMode,
+            };
+
+            using var communication = CommunicationFactory.CreateForRaspberryPi<ClientMessage>(ConfigurationManager.ConnectionStrings);
+            await communication.SendAsync(message);
         }
     }
 }

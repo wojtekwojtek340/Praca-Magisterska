@@ -185,7 +185,7 @@ namespace RaspberryServer.Sections
             var command = new SetDigitalPin
             {
                 PinNumber = Int32.Parse(PinoutDictionary.MainElectrovalve),
-                PinState = e,
+                PinState = !e,
             };
 
             await CommandExecutor.Execute(command);

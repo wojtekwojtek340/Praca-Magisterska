@@ -16,8 +16,8 @@ namespace RaspberryServer.RaspberryBoard
         {
             while (true)
             {
-                MessagesExecute();
                 MeasuresExecute();
+                MessagesExecute();
                 ActionsExceute();
                 Thread.Sleep(1000);
             }

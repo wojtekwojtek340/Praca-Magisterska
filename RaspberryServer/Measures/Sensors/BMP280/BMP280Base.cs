@@ -5,10 +5,9 @@ using System.Device.I2c;
 
 namespace RaspberryServer.Measures.Sensors.BMP280
 {
-    public class BMP280Base : Sensor
+    public abstract class BMP280Base : Sensor
     {
         private readonly I2cConnectionSettings i2cSettings;
-
         public BMP280Base()
         {
             i2cSettings = new I2cConnectionSettings(1, Bmp280.SecondaryI2cAddress);
@@ -22,8 +21,6 @@ namespace RaspberryServer.Measures.Sensors.BMP280
             Thread.Sleep(measurementTime);
             DoMeasure(bmp280, measurementResults);
         }
-        protected virtual void DoMeasure<T>(Bmp280 bmp280, T measurementResults) where T : IMeasurementResults
-        {
-        }
+        protected abstract void DoMeasure<T>(Bmp280 bmp280, T measurementResults) where T : IMeasurementResults;
     }
 }
